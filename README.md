@@ -9,7 +9,7 @@ Welcome to the Todo App Test Challenge! In this repository, you will find a simp
 Clone this repository to your local machine:
 
 ```bash
-git clone https://github.com/your-username/todo-app-challenge.git
+git clone https://github.com/vasildimitroffhristoff/playwright-testing.git
 ```
 
 ### 2. Install the dependencies
