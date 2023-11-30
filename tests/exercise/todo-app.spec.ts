@@ -3,11 +3,6 @@ import { test, expect } from "@playwright/test";
 
 test.describe.configure({ mode: "parallel" });
 
-// test.beforeEach(async ({ page }) => {
-//   // Step 1: Navigate to the TodoMVC app.
-//   await page.goto("https://demo.playwright.dev/todomvc");
-// });
-
 const TODO_ITEMS = [
   "buy some cheese",
   "feed the cat",
