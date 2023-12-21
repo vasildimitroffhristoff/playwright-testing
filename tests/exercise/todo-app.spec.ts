@@ -42,10 +42,16 @@ test.describe("New Todo", () => {
 
     // Step 1: Create a new todo locator.
     // Hint: It's good to use user facing locators and at first glance we can see that the input has a text "What needs to be done?" (page.getByPlaceholder("What needs to be done?"));
+    const newTodo = page.getByPlaceholder('What needs to be done?');
+
     // Step 2: Create and add one todo item. - you can achieve this by using two playwright actions - fill (to add text in the input field and press action to add the item)
-    // Reference: https://playwright.dev/docs/input
+    // Reference: https://playwright.dev/docs/
+    await newTodo.fill(TODO_ITEMS[2]);
+    await newTodo.press('Enter');
+
     // Step 3: Check that the input is empty.
     // Reference: Use assertion - https://playwright.dev/docs/test-assertions
+    await expect(page.getByPlaceholder("What needs to be done")).toBeEmpty();
   });
 
   test("should append new items to the bottom of the list", async ({
@@ -53,7 +59,18 @@ test.describe("New Todo", () => {
   }) => {
     await page.goto("https://demo.playwright.dev/todomvc");
     // Step 1: Create and add three default todos. Here you can use the `createDefaultTodos` helper function if you decide so.
+    await createDefaultTodos(page);
+
     // Step 2: Check the test using different methods. Use at least two assertions (such as toBeVisible, toHaveText...)
+    //toBeVisible, toHaveText
+    await expect(page.getByTestId("todo-title")).toHaveText([
+      TODO_ITEMS[0],
+      TODO_ITEMS[1],
+      TODO_ITEMS[2],
+    ]);
+    await expect(page.getByText('All Active Completed')).toBeVisible();
+    await expect(page.getByText('All Active Completed')).toContainText("3 items left");
+    await expect(page.getByText('All Active Completed')).toHaveCount(3); 
     // Reference: Use assertion - https://playwright.dev/docs/test-assertions
   });
 
