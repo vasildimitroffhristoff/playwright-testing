@@ -68,31 +68,59 @@ test.describe("New Todo", () => {
       TODO_ITEMS[1],
       TODO_ITEMS[2],
     ]);
-    await expect(page.getByText('All Active Completed')).toBeVisible();
-    await expect(page.getByText('All Active Completed')).toContainText("3 items left");
-    await expect(page.getByText('All Active Completed')).toHaveCount(3); 
+    await expect(page.getByTestId('todo-count')).toBeVisible();
+    await expect(page.getByTestId('todo-count')).toContainText("3 items left");
+     
     // Reference: Use assertion - https://playwright.dev/docs/test-assertions
   });
 
   test("should show #main and #footer when items added", async ({ page }) => {
     await page.goto("https://demo.playwright.dev/todomvc");
     // Step 1: Create a new todo locator.
+    const newTodo = page.getByPlaceholder('What needs to be done?');
+    
     // Step 2: Add a todo item.
+    await newTodo.fill(TODO_ITEMS[0]);
+    await newTodo.press("Enter");
+
     // Step 3: Check that #main and #footer are visible.
+    await expect(page.getByPlaceholder('What needs to be done?')).toBeVisible();
+    await expect(page.getByText('All Active Completed')).toBeVisible();
+
   });
 });
 
 test.describe("Mark all as completed", () => {
   test.beforeEach(async ({ page }) => {
+    await page.goto("https://demo.playwright.dev/todomvc");
     // Step 1: Create and add three default todos.
     await createDefaultTodos(page);
+    // Verify that Footer is visible
+    await expect(page.getByText('All Active Completed')).toBeVisible();   
+  
   });
 
   test("should allow me to mark all items as completed", async ({ page }) => {
     await page.goto("https://demo.playwright.dev/todomvc");
 
+    // Click All to display all created items
+    await page.getByRole('link', { name: 'All' }).click();
+
+    // Verify all created items are visible
+    await expect(page.getByText(TODO_ITEMS[0])).toBeVisible();
+    await expect(page.getByText(TODO_ITEMS[1])).toBeVisible();
+    await expect(page.getByText(TODO_ITEMS[2])).toBeVisible();
+
     // Step 1: Complete all todos. Find the locator which will mark all items as completed and apply action on it.
+    await page.locator('li').filter({ hasText: TODO_ITEMS[0] }).getByLabel('Toggle Todo').check();
+    await page.locator('li').filter({ hasText: TODO_ITEMS[1] }).getByLabel('Toggle Todo').check();
+    await page.locator('li').filter({ hasText: TODO_ITEMS[2] }).getByLabel('Toggle Todo').check();
+    await page.getByRole('link', { name: 'Completed' }).click();
+
     // Step 2: Ensure all todos have 'completed' class.
+    await expect(page.locator('li').filter({ hasText: TODO_ITEMS[0]})).toHaveClass('completed');
+    await expect(page.locator('li').filter({ hasText: TODO_ITEMS[1]})).toHaveClass('completed');
+    await expect(page.locator('li').filter({ hasText: TODO_ITEMS[2]})).toHaveClass('completed');
   });
 
   test("should allow me to clear the complete state of all items", async ({
